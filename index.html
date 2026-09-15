@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="MOTOR NAV，从工作台到下一次出发。">
+  <title>MOTOR NAV</title>
+  <link rel="preload" as="image" href="assets/images/workbench.webp">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/vendor/gsap.min.js" defer></script>
+  <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="assets/vendor/MotionPathPlugin.min.js" defer></script>
+  <script src="assets/vendor/MorphSVGPlugin.min.js" defer></script>
+  <script src="assets/model.js" defer></script>
+  <script src="assets/showcase.js" defer></script>
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <main id="app">
+    <section class="workbench" aria-label="MOTOR NAV 工作台。向下滚动，产品升起，周围场景逐渐变黑。">
+      <svg class="clip-definitions" width="0" height="0" aria-hidden="true">
+        <defs>
+          <clipPath id="product-mask" clipPathUnits="objectBoundingBox">
+            <path d="M.506 .392 C.571 .390 .616 .452 .620 .534 C.625 .620 .579 .692 .509 .697 C.442 .698 .390 .640 .390 .550 C.388 .475 .431 .404 .489 .395 Z"/>
+          </clipPath>
+        </defs>
+      </svg>
+      <div class="scene-plane">
+        <div class="desk-layer" aria-hidden="true">
+          <img class="desk-photo" src="assets/images/workbench.webp" width="1448" height="1086" alt="" fetchpriority="high">
+          <img class="desk-repair" src="assets/images/workbench-clean.webp" width="1448" height="1086" alt="" decoding="async">
+        </div>
+        <div class="product-layer" role="img" aria-label="金属圆形 MOTOR NAV 导航器，屏幕显示前方 300 米右转">
+          <img class="product-photo" src="assets/images/workbench.webp" width="1448" height="1086" alt="" aria-hidden="true">
+          <div class="product-front"><img src="assets/images/product-front.webp" width="1100" height="1100" alt="" aria-hidden="true" decoding="async"><svg class="dial-navigation" viewBox="0 0 1100 1100" aria-hidden="true"><defs><linearGradient id="screen-cover" x2="1" y2="1"><stop stop-color="#02020c"/><stop offset="1" stop-color="#01020a"/></linearGradient></defs><path d="M550 675L550 503L535 432Q529 413 550 408L676 379Q688 376 684 359L675 307Q674 298 663 292L594 253Q581 246 577 237L539 163" stroke="url(#screen-cover)" stroke-width="66" fill="none" stroke-linejoin="round"/><rect x="485" y="558" width="132" height="117" rx="17" fill="url(#screen-cover)"/><path class="dial-trail" d="M550 675L550 503L535 432Q529 413 550 408L676 379Q688 376 684 359L675 307Q674 298 663 292L594 253Q581 246 577 237L539 163" fill="none" stroke="#777b80" stroke-width="34" stroke-linejoin="round" stroke-linecap="butt"/><path class="dial-untraveled" d="M550 675L550 503L535 432Q529 413 550 408L676 379Q688 376 684 359L675 307Q674 298 663 292L594 253Q581 246 577 237L539 163" fill="none" stroke="#fff" stroke-width="34" stroke-linejoin="round" stroke-linecap="butt"/><g class="dial-cursor" transform="translate(550 615)"><path d="M0 -46Q5 -46 10 -39L54 27Q61 39 47 37L0 23L-47 37Q-61 39 -54 27L-10 -39Q-5 -46 0 -46Z" fill="#fff" stroke="#08090c" stroke-width="7" stroke-linejoin="round"/></g></svg></div>
+        </div>
+      </div>
+      
+      <button class="learn-product" type="button">了解产品<span aria-hidden="true"> ↗</span></button>
+      <svg class="outside-navigation" aria-hidden="true"><path class="outside-trail" fill="none" stroke="#777b80" stroke-linecap="butt" stroke-linejoin="round"/></svg>
+      <div class="flight-mark" role="img" aria-label="MOTOR NAV 白色飞鸟与橙色导航箭头标志">
+        <svg viewBox="0 0 1254 1254" xmlns="http://www.w3.org/2000/svg">
+          <g class="bird-parts" fill="#fff">
+            <path d="M262 213C240 345 299 387 413 450C343 423 274 389 230 354C231 454 300 516 440 540C377 530 320 515 273 498C290 566 345 602 443 617C397 617 362 613 333 607C345 633 363 650 383 664L669 575C534 476 379 333 262 213Z"/>
+            <path d="M398 931C516 836 626 727 696 636C724 685 749 715 801 726C681 838 555 901 398 931Z"/>
+            <path d="M775 696C837 647 899 615 962 581C993 564 1022 566 1043 587C1062 604 1112 607 1111 621C1108 629 1072 624 1030 634C1005 641 1010 608 1000 596C990 581 970 589 963 598C957 612 964 632 977 642C918 651 882 683 854 712C824 714 797 708 775 696Z"/>
+          </g>
+          <path class="flying-arrow" d="M627 259Q667 259 707 315L1059 843Q1115 939 1003 923L627 811L251 923Q139 939 195 843L547 315Q587 259 627 259Z" fill="#fff" stroke="#08090c" stroke-width="55" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
