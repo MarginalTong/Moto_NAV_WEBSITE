@@ -47,8 +47,8 @@
       front.style.setProperty('--radius', `${base*.488}px`);
       front.style.setProperty('--facet-width', `${base*.488*2*Math.PI/120+.4}px`);
       front.style.transformOrigin = `50% 50% ${-base*.13}px`;
-      const settled = Math.min(w * .68, h * .60, 650);
-      const logoSize = context.conditions.mobile ? 112 : 160;
+      const settled = Math.min(w * (context.conditions.mobile ? .56 : .68), h * .60, 650);
+      const logoSize = context.conditions.mobile ? 88 : 160;
       const x = w / 2 + settled * (539 / 1100 - .5);
       const y = h / 2 + settled * (163 / 1100 - .5);
       const endX = 20 + logoSize / 2, endY = 16 + logoSize / 2;
@@ -119,6 +119,7 @@
       }
     });
     motion.addLabel('on-desk', 0)
+      .to(stage.querySelector('.cover-wordmark'), { autoAlpha: 0, y: -10, duration: .09, ease: 'power1.out' }, 0)
       .set(front, { rotation: 6, scaleY: .97 }, 0)
       // Erase the original device before the isolated layer leaves its position.
       .to(repair, { opacity: 1, duration: 0.09 }, 0)
@@ -140,7 +141,7 @@
       .to(product, {
         x: () => -plane.clientWidth * 0.005,
         y: () => -plane.clientHeight * 0.045,
-        scale: () => Math.min(stage.clientWidth * 0.82, stage.clientHeight * 0.78, 850) / (plane.clientWidth * 0.232),
+        scale: () => Math.min(stage.clientWidth * (context.conditions.mobile ? .66 : .82), stage.clientHeight * 0.78, 850) / (plane.clientWidth * 0.232),
         duration: 0.28,
         ease: 'sine.inOut'
       }, 0.40)
@@ -148,7 +149,7 @@
       .to({}, { duration: 0.20 }, 'center-closeup')
       .addLabel('settle', 0.88)
       .to(product, {
-        scale: () => Math.min(stage.clientWidth * 0.68, stage.clientHeight * 0.60, 650) / (plane.clientWidth * 0.232),
+        scale: () => Math.min(stage.clientWidth * (context.conditions.mobile ? .56 : .68), stage.clientHeight * 0.60, 650) / (plane.clientWidth * 0.232),
         duration: 0.24,
         ease: 'sine.inOut'
       }, 'settle')
@@ -171,7 +172,7 @@
       .to(product, {
         x: () => -plane.clientWidth*.005 - (context.conditions.mobile ? 0 : stage.clientWidth*.22),
         y: () => -plane.clientHeight*.045 - (context.conditions.mobile ? stage.clientHeight*.08 : 0),
-        scale: () => Math.min(stage.clientWidth*(context.conditions.mobile ? .78 : .43),stage.clientHeight*.60,650)/(plane.clientWidth*.232),
+        scale: () => Math.min(stage.clientWidth*(context.conditions.mobile ? .58 : .43),stage.clientHeight*.60,650)/(plane.clientWidth*.232),
         duration: .55, ease: 'sine.inOut'
       }, 'product-layout')
       .to(button, { autoAlpha: 1, duration: .28 }, 2.48)

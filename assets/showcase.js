@@ -8,7 +8,7 @@
     <div class="phone-preview" role="img" aria-label="MOTO NAV 手机应用示意：连接设备，在地图上规划到悉尼歌剧院的路线">
       <div class="phone-status"><b>03:17</b><span>▴ ▰ ▰</span></div>
       <div class="phone-title">MOTO NAV <span>➤</span></div>
-      <div class="phone-connect"><i></i><div>Ready to go<small>Connect device</small></div><span>ᛒ</span></div>
+      <div class="phone-connect"><i></i><div>Ready to go<small>Connect device</small></div><svg class="bluetooth-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7L17 17L12 22V2L17 7L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <svg class="phone-map" viewBox="0 0 340 345" aria-hidden="true">
         <defs><pattern id="map-grid" width="17" height="19" patternUnits="userSpaceOnUse" patternTransform="rotate(-17)"><rect width="17" height="19" fill="#eeeee5"/><path d="M0 0H17V19H0Z M8 0V19" fill="none" stroke="#d1d1c9" stroke-width="1"/></pattern></defs>
         <rect width="340" height="345" fill="url(#map-grid)"/>
@@ -25,7 +25,7 @@
       <div class="phone-destination"><b>Destination</b><div class="destination-field"><span>⌕</span><div>Sydney Opera House<small>Bennelong Point</small></div><span>›</span></div><div class="connect-hint">➤　Connect navigation screen first</div></div>
       <div class="phone-home"></div>
     </div>
-    <article class="app-story"><p class="story-eyebrow">MOTO NAV APP</p><h2 id="app-story-title">下一程，<br>从这里开始。</h2><p class="story-lead">在手机上选好目的地，把沿途的方向交给 MOTOR NAV。</p><div class="story-features"><section><span>01</span><div><h3>规划你的下一站</h3><p>搜索目的地，在地图上查看路线，让每次出发都有方向。</p></div></section><section><span>02</span><div><h3>连接，即刻准备出发</h3><p>将手机与导航器连接，让路线规划与车把上的指引衔接起来。</p></div></section><section><span>03</span><div><h3>把注意力留给前方</h3><p>用清晰的转向与距离提示，陪你走过城市街角和下一段旅程。</p></div></section></div></article>
+    <article class="app-story"><h2 id="app-story-title">下一程，<br>从这里开始。</h2><p class="story-lead">在手机上选好目的地，把沿途的方向交给 MOTOR NAV。</p><div class="story-features"><section><span>01</span><div><h3>规划你的下一站</h3><p>搜索目的地，在地图上查看路线，让每次出发都有方向。</p></div></section><section><span>02</span><div><h3>连接，即刻准备出发</h3><p>将手机与导航器连接，让路线规划与车把上的指引衔接起来。</p></div></section><section><span>03</span><div><h3>把注意力留给前方</h3><p>用清晰的转向与距离提示，陪你走过城市街角和下一段旅程。</p></div></section></div></article>
   </div><button class="showcase-next" type="button">继续 <span aria-hidden="true">↗</span></button>`;
   document.body.append(dialog);
   const next = dialog.querySelector('.showcase-next');
@@ -63,7 +63,7 @@
     animation.fromTo(phone, { x: mobile ? 45 : innerWidth*.42, y: 24, autoAlpha: 0 }, { x: mobile ? 20 : innerWidth*.34, y: 0, autoAlpha: 1, duration: reduced ? 0 : .55, ease:'power2.out' })
       .to(phone, { x:0, duration:reduced ? 0 : .95, ease:'power3.inOut' }, reduced ? 0 : '+=.15')
       .fromTo(story, { y:20, autoAlpha:0 }, { y:0, autoAlpha:1, duration:reduced ? 0 : .6, ease:'power2.out' }, reduced ? 0 : '-=.35')
-      .to(next, {autoAlpha:1,y:0,duration:reduced ? 0 : .4,ease:'power2.out'}, '+=1');
+      .to(next, {autoAlpha:1,y:0,duration:reduced ? 0 : .4,ease:'power2.out'}, '+=0.5');
   };
   next.addEventListener('click', () => {
     if(next.disabled) return;
@@ -77,7 +77,7 @@
         route.setAttribute('d','M32 296L61 266L65 226L91 218L99 185L115 174L114 143L135 132L135 110');
         gsap.set(pin,{x:-150,y:69});
         destination.innerHTML = 'Rozelle<small>Selected on map</small>';
-        storyPanel.innerHTML = '<p class="story-eyebrow">TAP & GO</p><h2 id="app-story-title">点哪，<br>就去哪。</h2><p class="story-lead">想换个目的地？在地图上轻点一下，新的路线即刻呈现。</p><div class="story-features"><section><span>01</span><div><h3>地图上的一点，就是下一站</h3><p>不必重新输入地址，直接选择你想去的位置。</p></div></section><section><span>02</span><div><h3>改变主意，路线跟着改变</h3><p>重新规划前往新目的地的路线，让临时起意也能成为旅程的一部分。</p></div></section></div>';
+        storyPanel.innerHTML = '<h2 id="app-story-title">点哪，<br>就去哪。</h2><p class="story-lead">想换个目的地？在地图上轻点一下，新的路线即刻呈现。</p><div class="story-features"><section><span>01</span><div><h3>地图上的一点，就是下一站</h3><p>不必重新输入地址，直接选择你想去的位置。</p></div></section><section><span>02</span><div><h3>改变主意，路线跟着改变</h3><p>重新规划前往新目的地的路线，让临时起意也能成为旅程的一部分。</p></div></section></div>';
       })
       .fromTo(ring,{autoAlpha:1,scale:.5,svgOrigin:'135 110'},{autoAlpha:0,scale:2.4,duration:reduced ? 0 : .45})
       .to(hand,{autoAlpha:0,x:150,y:135,duration:reduced ? 0 : .35},'>-.15');
