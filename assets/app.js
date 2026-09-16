@@ -14,6 +14,7 @@
   const arrow = stage.querySelector('.flying-arrow');
   const bird = stage.querySelector('.bird-parts');
   const trail = stage.querySelector('.dial-trail');
+  const dragSurface = stage.querySelector('.model-drag');
   const introPlay = stage.querySelector('.intro-play');
   const button = stage.querySelector('.learn-product');
   window.buildMotorNav(front);
@@ -66,9 +67,18 @@
       const after = path.getPointAtLength(Math.min(total, distance + .1));
       return { x: point.x, y: point.y, rotation: Math.atan2(after.y-before.y, after.x-before.x)*180/Math.PI+90 };
     }
+    let dragging = null;
+    let inspectReady = false;
     function renderRoute() {
       const time = motion.time();
       introPlay.disabled = time > .025;
+      const ready = time >= 2.76;
+      dragSurface.disabled = !ready;
+      if (!ready && inspectReady) {
+        dragging = null;
+        gsap.set(front, {rotationX:0, rotationY:0});
+      }
+      inspectReady = ready;
       const departed = time >= .88;
       const escaped = time >= 1.405;
       const distance = startDistance + progress.inside * (length-startDistance);
@@ -102,7 +112,7 @@
         id: 'workbench-lift',
         trigger: stage,
         start: 'top top',
-        end: () => `+=${stage.clientHeight * 9.8}`,
+        end: () => `+=${stage.clientHeight * (9.8 * 2.8 / 4.7)}`,
         pin: true,
         scrub: 0.65,
         anticipatePin: 1,
@@ -178,24 +188,30 @@
         duration: .55, ease: 'sine.inOut'
       }, 'product-layout')
       .to(button, { autoAlpha: 1, duration: .28 }, 2.48)
-      .addLabel('product-turn', 2.85)
-      .to(front, { rotationY: -180, duration: 1.6 }, 'product-turn')
-      .addLabel('product-back', 4.45)
-      .to({}, { duration: .25 });
+      .to({}, { duration: .04 }, 2.76);
     let autoScroll;
     const stopAutoScroll = () => { autoScroll?.kill(); autoScroll = null; };
     const startAutoScroll = () => {
       if (introPlay.disabled || autoScroll) return;
       const st = motion.scrollTrigger;
-      const target = st.start + (st.end-st.start) * (2.8/motion.duration());
       const position = { y: window.scrollY };
-      autoScroll = gsap.to(position, {
-        y: target,
-        duration: Math.max(.1, (target-position.y)/(stage.clientHeight*.55)),
-        ease: 'none',
+      const scrollAt = time => st.start + (st.end-st.start) * time/motion.duration();
+      autoScroll = gsap.timeline({
+        defaults: { ease: 'none' },
         onUpdate: () => window.scrollTo({top:position.y, behavior:'instant'}),
         onComplete: () => { autoScroll = null; }
       });
+      let previous = position.y;
+      // Speed up the arrow's climb, then return to the presentation pace.
+      for (const [time, speed] of [[.88, 1], [1.715, 1.7], [2.8, 1]]) {
+        const target = scrollAt(time);
+        if (target <= previous) continue;
+        autoScroll.to(position, {
+          y: target,
+          duration: (target-previous)/(stage.clientHeight*.55*speed)
+        });
+        previous = target;
+      }
     };
     const interruptKey = event => {
       if (['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' ','Escape'].includes(event.key)) stopAutoScroll();
@@ -209,10 +225,55 @@
     window.addEventListener('resize', stopAutoScroll);
     const explore = () => { stopAutoScroll(); window.openMotorNav(); };
     button.addEventListener('click', explore);
+    const dragStart = event => {
+      if (dragSurface.disabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      stopAutoScroll();
+      dragging = {id:event.pointerId, x:event.clientX, y:event.clientY};
+      dragSurface.setPointerCapture(event.pointerId);
+      dragSurface.classList.add('is-dragging');
+    };
+    const dragMove = event => {
+      if (!dragging || dragging.id !== event.pointerId) return;
+      const sensitivity = 360 / dragSurface.clientWidth;
+      gsap.set(front, {
+        rotationY: Number(gsap.getProperty(front,'rotationY')) + (event.clientX-dragging.x)*sensitivity,
+        rotationX: Number(gsap.getProperty(front,'rotationX')) - (event.clientY-dragging.y)*sensitivity
+      });
+      dragging.x = event.clientX;
+      dragging.y = event.clientY;
+    };
+    const dragEnd = event => {
+      if (dragSurface.hasPointerCapture(event.pointerId)) dragSurface.releasePointerCapture(event.pointerId);
+      dragging = null;
+      dragSurface.classList.remove('is-dragging');
+    };
+    const rotateKey = event => {
+      const directions = {ArrowLeft:[0,-15],ArrowRight:[0,15],ArrowUp:[15,0],ArrowDown:[-15,0],Home:[0,0]};
+      if (!directions[event.key]) return;
+      event.preventDefault();
+      const [x,y] = directions[event.key];
+      gsap.set(front, {rotationX:event.key==='Home'?0:Number(gsap.getProperty(front,'rotationX'))+x, rotationY:event.key==='Home'?0:Number(gsap.getProperty(front,'rotationY'))+y});
+    };
+    dragSurface.addEventListener('pointerdown',dragStart);
+    dragSurface.addEventListener('pointermove',dragMove);
+    dragSurface.addEventListener('pointerup',dragEnd);
+    dragSurface.addEventListener('pointercancel',dragEnd);
+    dragSurface.addEventListener('lostpointercapture',dragEnd);
+    dragSurface.addEventListener('keydown',rotateKey);
+
 
     renderRoute();
     return () => {
       stopAutoScroll();
+      dragSurface.disabled = true;
+      dragSurface.classList.remove('is-dragging');
+      dragSurface.removeEventListener('pointerdown',dragStart);
+      dragSurface.removeEventListener('pointermove',dragMove);
+      dragSurface.removeEventListener('pointerup',dragEnd);
+      dragSurface.removeEventListener('pointercancel',dragEnd);
+      dragSurface.removeEventListener('lostpointercapture',dragEnd);
+      dragSurface.removeEventListener('keydown',rotateKey);
+      gsap.set(front,{rotationX:0,rotationY:0});
       introPlay.disabled = true;
       introPlay.removeEventListener('click', startAutoScroll);
       window.removeEventListener('wheel', stopAutoScroll);

@@ -153,3 +153,7 @@ body { margin: 0; }
 .intro-play { position:absolute; left:50.5%; top:54.5%; width:23.2%; aspect-ratio:1; transform:translate(-50%,-50%); border:0; border-radius:50%; padding:0; background:transparent; z-index:2; cursor:pointer; touch-action:pan-y; -webkit-tap-highlight-color:transparent; }
 .intro-play:disabled { visibility:hidden; pointer-events:none; }
 .intro-play:focus-visible { outline:2px solid #ff721f; outline-offset:8px; }
+
+.model-drag { position:absolute; z-index:3; left:28%;top:50%;width:min(43vw,60svh,650px);aspect-ratio:1;transform:translate(-50%,-50%);border:0;border-radius:50%;padding:0;background:transparent;touch-action:none;cursor:grab; }
+.model-drag:disabled { visibility:hidden;pointer-events:none; }.model-drag.is-dragging { cursor:grabbing; }.model-drag:focus-visible { outline:2px solid #ff721f;outline-offset:8px; }
+@media(max-width:700px) { .model-drag { left:50%;top:42%;width:min(58vw,60svh,650px); } }
