@@ -14,6 +14,7 @@
   const arrow = stage.querySelector('.flying-arrow');
   const bird = stage.querySelector('.bird-parts');
   const trail = stage.querySelector('.dial-trail');
+  const introPlay = stage.querySelector('.intro-play');
   const button = stage.querySelector('.learn-product');
   window.buildMotorNav(front);
   const dialCursor = stage.querySelector('.dial-cursor');
@@ -67,6 +68,7 @@
     }
     function renderRoute() {
       const time = motion.time();
+      introPlay.disabled = time > .025;
       const departed = time >= .88;
       const escaped = time >= 1.405;
       const distance = startDistance + progress.inside * (length-startDistance);
@@ -180,11 +182,44 @@
       .to(front, { rotationY: -180, duration: 1.6 }, 'product-turn')
       .addLabel('product-back', 4.45)
       .to({}, { duration: .25 });
-    const explore = () => window.openMotorNav();
+    let autoScroll;
+    const stopAutoScroll = () => { autoScroll?.kill(); autoScroll = null; };
+    const startAutoScroll = () => {
+      if (introPlay.disabled || autoScroll) return;
+      const st = motion.scrollTrigger;
+      const target = st.start + (st.end-st.start) * (2.8/motion.duration());
+      const position = { y: window.scrollY };
+      autoScroll = gsap.to(position, {
+        y: target,
+        duration: Math.max(.1, (target-position.y)/(stage.clientHeight*.55)),
+        ease: 'none',
+        onUpdate: () => window.scrollTo({top:position.y, behavior:'instant'}),
+        onComplete: () => { autoScroll = null; }
+      });
+    };
+    const interruptKey = event => {
+      if (['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' ','Escape'].includes(event.key)) stopAutoScroll();
+    };
+    const interruptPointer = event => { if (event.target !== introPlay) stopAutoScroll(); };
+    introPlay.addEventListener('click', startAutoScroll);
+    window.addEventListener('wheel', stopAutoScroll, {passive:true});
+    window.addEventListener('touchmove', stopAutoScroll, {passive:true});
+    window.addEventListener('pointerdown', interruptPointer, {passive:true});
+    window.addEventListener('keydown', interruptKey);
+    window.addEventListener('resize', stopAutoScroll);
+    const explore = () => { stopAutoScroll(); window.openMotorNav(); };
     button.addEventListener('click', explore);
 
     renderRoute();
     return () => {
+      stopAutoScroll();
+      introPlay.disabled = true;
+      introPlay.removeEventListener('click', startAutoScroll);
+      window.removeEventListener('wheel', stopAutoScroll);
+      window.removeEventListener('touchmove', stopAutoScroll);
+      window.removeEventListener('pointerdown', interruptPointer);
+      window.removeEventListener('keydown', interruptKey);
+      window.removeEventListener('resize', stopAutoScroll);
       untraveled.style.removeProperty('stroke-dashoffset');
       outside.style.opacity = 0;
       button.removeEventListener('click', explore);
